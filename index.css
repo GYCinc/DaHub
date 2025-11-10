@@ -1,0 +1,90 @@
+body {
+  background-color: #f5f7f9; /* light-gray-bg */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-smoothing: grayscale;
+}
+
+.dark body {
+  background-color: #111827; /* dark-bg */
+}
+
+.primary-button {
+  background-color: #ffe58a; /* bright-yellow */
+  color: #2a3b5a; /* dark-blue-text */
+  font-weight: 600;
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.primary-button:hover {
+  transform: translateY(-2px);
+  background-color: #ffd700;
+}
+
+.dark .primary-button {
+  background: linear-gradient(145deg, #2dd4bf, #23a895);
+  color: #111827; /* dark-bg */
+  font-weight: 700;
+  border-radius: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  box-shadow: 0 4px 10px rgba(45, 212, 191, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease-in-out;
+  backdrop-filter: none;
+}
+
+.dark .primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(45, 212, 191, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(145deg, #5eead4, #2dd4bf);
+}
+
+.secondary-button {
+  background-color: #ffffff;
+  color: #2a3b5a; /* dark-blue-text */
+  font-weight: 500;
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.secondary-button:hover {
+  transform: translateY(-1px);
+}
+
+.dark .secondary-button {
+  background-color: #1F2937; /* dark-card */
+  color: #F9FAFB; /* dark-text-primary */
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.25rem;
+  box-shadow: none;
+  border: 1px solid #374151; /* dark-border */
+  transition: all 0.2s ease-in-out;
+}
+
+.dark .secondary-button:hover {
+  background-color: #374151;
+  border-color: #9CA3AF;
+  color: #F9FAFB;
+  transform: translateY(-2px);
+}
+
+
+.class-card {
+  background-color: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.class-card:hover {
+  transform: translateY(-5px);
+}
+
+.dark .class-card {
+  border-radius: 1.75rem;
+  background-color: transparent;
+  box-shadow: none;
+}
