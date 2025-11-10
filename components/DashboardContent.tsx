@@ -9,31 +9,33 @@ import { processClassesWithColors } from '../mockData';
 type StatCardProps = {title: string, value: number | string, icon: string, colorName: string};
 // FIX: Explicitly type as a React.FC to ensure TypeScript correctly handles React-specific props like 'key'.
 const StatCard: FC<StatCardProps> = ({ title, value, icon, colorName }) => {
-    // Light mode classes
-    const lightBgClass = {
-        green: 'bg-light-green-bg',
-        purple: 'bg-light-purple-bg',
-        yellow: 'bg-bright-yellow/60'
-    }[colorName];
+    // Light mode icon background class
     const lightIconBgClass = {
         green: 'bg-icon-bg-green',
         purple: 'bg-icon-bg-purple',
         yellow: 'bg-icon-bg-yellow'
     }[colorName];
+    // Light mode icon color class (yellow has dark text, others white)
     const lightIconColorClass = colorName === 'yellow' ? 'text-dark-blue-text' : 'text-white';
 
 
-    // Dark mode classes
-    const darkBgClass = `dark:bg-glass-${colorName}`;
-    const darkBorderClass = `dark:border-glass-${colorName}-border`;
-    const darkIconBgClass = 'dark:bg-dark-accent/20';
-    const darkIconColorClass = 'dark:text-dark-accent';
+    // Dark mode icon background class
+    const darkIconBgClass = 'dark:bg-dark-accent/20'; // This is a lighter shade/opacity from accent
+    // Dark mode icon color class
+    const darkIconColorClass = 'dark:text-dark-accent'; // This is the main accent color
+
+    // Gradient classes for the card background
+    const gradientClasses = {
+        green: 'from-stat-green-light-start to-stat-green-light-end dark:from-stat-green-dark-start dark:to-stat-green-dark-end',
+        purple: 'from-stat-purple-light-start to-stat-purple-light-end dark:from-stat-purple-dark-start dark:to-stat-purple-dark-end',
+        yellow: 'from-stat-yellow-light-start to-stat-yellow-light-end dark:from-stat-yellow-dark-start dark:to-stat-yellow-dark-end',
+    }[colorName];
 
     return (
         <div className={`
-            ${lightBgClass} ${darkBgClass} ${darkBorderClass} 
+            bg-gradient-to-br ${gradientClasses}
             p-6 rounded-3xl shadow-lg flex justify-between items-center 
-            transform hover:scale-[1.02] dark:hover:-translate-y-1 transition-transform duration-300 dark:border
+            transform hover:scale-[1.02] dark:hover:-translate-y-1 transition-transform duration-300
         `}>
             <div>
                 <p className="text-base text-dark-blue-text/80 dark:text-dark-text-secondary font-body">{title}</p>

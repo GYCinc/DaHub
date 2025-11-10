@@ -5,9 +5,11 @@
 |---|---|
 | `App.tsx` | The main application container. Manages global state for the shared dashboard, including authentication, view routing, `classesToApprove` and `approvedClasses`, acting as the single source of truth. |
 | `LoginScreen.tsx` | Renders the full-page access code entry form for the shared dashboard. |
-| `Header.tsx` | Renders the top bar. Contains the logo, primary navigation (Inbox, Learning Hub), notification badge, and the student's user menu. |
+| `Header.tsx` | Renders the top bar. Contains the logo, primary navigation (Inbox, Accomplishments, Playground, Statistics), notification badge, and the student's user menu. |
 | `DashboardContent.tsx` | The primary workspace for the tutor, serving as the application's 'Inbox'. Displays the queue of classes to be finalized ("approved"). Calculates and displays all summary stats. Manages the review modal UI. |
-| `LearningHub.tsx` | Renders the "Class History" view, which is a shared archive of all approved classes for both tutor and student. |
+| `LearningHub.tsx` | Renders the "Accomplishments" view, which is a shared archive of all approved classes for both tutor and student. |
+| `Playground.tsx` | Renders a sandbox or interactive experimentation area for new features or student activities. |
+| `Statistics.tsx` | Renders a view dedicated to displaying various metrics, analytics, and performance data. |
 | `SettingsPage.tsx`| Renders the student's settings page. |
 
 ## 2. Data Models & Schemas
@@ -15,7 +17,7 @@
 "// Class Data Object (used for preparation and history)
 {
   "id": "number (unique)",
-  "week": "number", // Used for grouping in Class History
+  "week": "number", // Used for grouping in Accomplishments
   "date": "string (e.g., '08/05/2024')",
   "title": "string",
   "primaryFocus": "string (e.g., 'Grammar', 'Practical', 'Vocabulary', 'Instructional')", // Drives the card's accent color
@@ -43,7 +45,7 @@
     a. The class is removed from the `classesToApprove` (inbox) array.
     b. The class is added to the `approvedClasses` (history) array.
 5. The `App` component re-renders, passing the new state down.
-6. `DashboardContent` receives the new props and recalculates all summary stats. `LearningHub` also receives the updated `approvedClasses` list for the shared history. The notification badge in the `Header` is also updated.
+6. `DashboardContent` receives the new props and recalculates all summary stats. `LearningHub` (Accomplishments) also receives the updated `approvedClasses` list for the shared history. The notification badge in the `Header` is also updated.
 
 **Logging Out:**
 1. User clicks the avatar in the `Header` to open the dropdown menu.

@@ -51,7 +51,7 @@ type HeaderProps = {
 
 export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inboxCount }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true); // Changed to true for diagnostic testing
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -59,21 +59,21 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
   
   const handleMobileNav = (view: string) => {
     onNavigate(view);
-    setIsMobileMenuOpen(false);
+    setIsMobileMenuOpen(false); // Still close after navigation for mobile UX
   };
 
   return (
     <header className="relative bg-white dark:bg-dark-card/70 dark:backdrop-blur-lg px-8 py-4 flex items-center justify-between shadow-lg sticky top-0 z-10 rounded-b-3xl mx-4 mt-4 dark:border-b dark:border-dark-border/50">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-pastel-green dark:text-dark-accent text-4xl">
+            <span className="material-symbols-outlined text-blood-orange text-4xl">
               hub
             </span>
-            <h1 className="text-3xl font-heading font-bold text-dark-blue-text dark:text-dark-text-primary">
+            <h1 className="text-3xl font-heading font-bold text-blood-orange">
                 gitEnglish™
             </h1>
         </div>
-        <nav className="hidden sm:flex items-center gap-4">
+        <nav className="flex items-center gap-4"> {/* Removed 'hidden sm:flex' to always show desktop nav for diagnostic */}
           <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={onNavigate}>
             <div className="relative flex items-center gap-2">
                 Inbox
@@ -84,7 +84,9 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
                 )}
             </div>
           </NavLink>
-          <NavLink viewName="Learning Hub" active={activeLink === 'Learning Hub'} onNavigate={onNavigate}>Learning Hub</NavLink>
+          <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={onNavigate}>Accomplishments</NavLink>
+          <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={onNavigate}>Playground</NavLink> {/* New NavLink */}
+          <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={onNavigate}>Statistics</NavLink> {/* New NavLink */}
         </nav>
       </div>
       <div className="flex items-center gap-4">
@@ -141,7 +143,7 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
           </button>
         </div>
       </div>
-      {isMobileMenuOpen && (
+      {isMobileMenuOpen && ( // This will now open automatically for testing
         <div className="absolute top-full left-0 right-0 mx-4 bg-white/95 dark:bg-dark-card/95 backdrop-blur-md shadow-lg rounded-b-2xl sm:hidden overflow-hidden z-20">
           <nav className="flex flex-col p-4 gap-2">
             <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={handleMobileNav}>
@@ -154,7 +156,9 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
                   )}
               </div>
             </NavLink>
-            <NavLink viewName="Learning Hub" active={activeLink === 'Learning Hub'} onNavigate={handleMobileNav}>Learning Hub</NavLink>
+            <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={handleMobileNav}>Accomplishments</NavLink>
+            <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={handleMobileNav}>Playground</NavLink> {/* New NavLink for mobile */}
+            <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={handleMobileNav}>Statistics</NavLink> {/* New NavLink for mobile */}
             <div className="border-t border-gray-200 dark:border-dark-border my-2"></div>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-light-gray-bg dark:hover:bg-dark-bg text-dark-blue-text dark:text-dark-text-primary" onClick={(e) => { e.preventDefault(); handleMobileNav('Settings'); }}>
                 <span className="material-symbols-outlined text-dark-blue-text/70 dark:text-dark-text-secondary">settings</span>

@@ -48,7 +48,7 @@ export function LearningHub({ approvedClasses }) {
     return (
         <div>
             <div className="mb-8">
-                <h1 className="text-4xl font-heading font-bold text-dark-blue-text dark:text-dark-text-primary">Class History</h1>
+                <h1 className="text-4xl font-heading font-bold text-dark-blue-text dark:text-dark-text-primary">Accomplishments</h1>
             </div>
             <div className="space-y-12">
                 {sortedWeeks.length > 0 ? (

@@ -20,8 +20,8 @@ export function LoginScreen({ onLogin }) {
     <div className="font-body text-dark-blue-text dark:text-dark-text-primary flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md bg-white dark:bg-dark-card p-8 rounded-2xl shadow-xl text-center">
         <div className="flex items-center justify-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-pastel-green dark:text-dark-accent text-5xl">hub</span>
-            <h1 className="text-4xl font-heading font-bold text-dark-blue-text dark:text-dark-accent">
+            <span className="material-symbols-outlined text-blood-orange text-5xl">hub</span>
+            <h1 className="text-4xl font-heading font-bold text-blood-orange">
                 gitEnglish™
             </h1>
         </div>

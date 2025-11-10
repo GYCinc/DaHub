@@ -1,3 +1,60 @@
+### 2024-09-15: Fix Critical Syntax Error in `index.tsx`
+
+*   **Type:** `Critical Discovery`
+*   **Context:** The application was failing to compile and run with an `Uncaught SyntaxError: Unexpected token ','`. This error was traced to an improperly placed JSX comment (`{/* ... */}`) between two attributes of the `Header` component in `index.tsx`. The comment was interrupting the JSX parser's expected flow of attributes.
+*   **Decision/Outcome:** The problematic JSX comment line `<!-- FIX: Changed 'classesToToApprove' to 'classesToApprove' to resolve a typo. -->` was removed from the `Header` component's props in `index.tsx`.
+*   **Rationale:** Removing the misplaced comment resolves the critical `SyntaxError`, allowing the application to parse and execute correctly. This fix is purely syntactic and does not alter the application's functionality or visual appearance, but it was essential for the app to become runnable again.
+
+### 2024-09-14: Add 'Playground' and 'Statistics' Navigation Links
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to expand the main header navigation by adding two new tabs: 'Playground' and 'Statistics'. These new links are to be placed after 'Accomplishments' and before any user dropdown or utility buttons.
+*   **Decision/Outcome:**
+    1.  New `NavLink` components for 'Playground' and 'Statistics' were added to `components/Header.tsx` in both the desktop and mobile navigation menus, in the specified order.
+    2.  Dummy `Playground.tsx` and `Statistics.tsx` components were created as placeholders, each rendering a simple `h1` and paragraph.
+    3.  `index.tsx` was updated to import these new components and include them in the `renderContent` switch statement, mapping the 'Playground' and 'Statistics' `activeView` states to their respective components.
+    4.  `README.md` and `ARCHITECTURE.md` were updated to reflect the new navigation links and components.
+*   **Rationale:** This change directly implements the user's directive to expand the application's navigation. By adding these new sections, the application's structure is broadened to accommodate future features and provide more distinct areas for different functionalities, improving overall information architecture.
+
+### 2024-09-13: Implement Gradient Backgrounds for Stat Cards
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to enhance the visual appearance of the dashboard's summary stat cards ("array boxes") by applying a gradient background to make them "pop" more, while maintaining a cohesive look across both light and dark themes.
+*   **Decision/Outcome:**
+    1.  New gradient color stops (`stat-green-light-start/end`, `stat-purple-light-start/end`, `stat-yellow-light-start/end` for light theme and `stat-green-dark-start/end`, `stat-purple-dark-start/end`, `stat-yellow-dark-start/end` for dark theme) were added to the `tailwind.config.theme.extend.colors` in `index.html`.
+    2.  The existing `icon-bg-green`, `icon-bg-purple`, and `icon-bg-yellow` color definitions in `index.html` were updated to new solid shades (emerald-500, violet-500, amber-500 respectively) to ensure better contrast and harmony with the new gradient card backgrounds.
+    3.  In `components/DashboardContent.tsx`, the `StatCard` component's main `div` was updated to use `bg-gradient-to-br` along with dynamically constructed `from-[color]-start` and `to-[color]-end` classes.
+    4.  The previous `lightBgClass`, `darkBgClass`, and `darkBorderClass` calculations in `StatCard` were removed, as the gradients now handle the card's main background styling.
+    5.  The `dark:border` class was removed from the `StatCard`'s main div, as the gradients replace the previously transparent "glass" effect.
+*   **Rationale:** This change directly implements the user's visual directive to introduce dynamic and aesthetically pleasing gradients to the key dashboard metrics. By carefully selecting gradient ranges and complementary icon colors for both light and dark themes, the stat cards now offer a more vibrant and professional appearance, enhancing the overall user experience and making the dashboard more engaging.
+
+### 2024-09-12: Force 'Accomplishments' Link Visibility (Diagnostic)
+
+*   **Type:** `Refactor`
+*   **Context:** Despite multiple attempts, the user continues to report that the "Accomplishments" navigation link is not visible in the header. This indicates a persistent rendering issue or an environmental factor (like caching) preventing the link from appearing as intended, especially across different screen sizes or browser states.
+*   **Decision/Outcome:**
+    1.  The `hidden sm:flex` Tailwind classes were removed from the desktop navigation `<nav>` element in `components/Header.tsx`. This change forces the desktop navigation, including the "Accomplishments" link, to always be visible, regardless of screen size.
+    2.  The `isMobileMenuOpen` state in `components/Header.tsx` was temporarily initialized to `true`. This action forces the mobile navigation menu to always be open when the header renders, ensuring the mobile "Accomplishments" link is also immediately visible (on screens smaller than `sm`).
+*   **Rationale:** These changes are implemented as a diagnostic step to guarantee the "Accomplishments" link is rendered. By removing responsive hiding logic and forcing the mobile menu open, we aim to eliminate any potential CSS or state-related rendering blockers. This aggressive approach is necessary to definitively confirm the presence of the link and isolate the root cause of the user's persistent issue. Once confirmed, these diagnostic changes can be reverted or refined for proper responsive behavior.
+
+### 2024-09-12: Fix Critical Mobile Navigation Rendering Error
+
+*   **Type:** `Critical Discovery`
+*   **Context:** The user reported that the "Accomplishments" tab was still not visible or navigable, especially on smaller screens. Upon investigation, a critical syntax error (`)}`) was found in `components/Header.tsx` immediately after the mobile menu button's `div` element. This error was preventing the entire mobile navigation menu from rendering, making it impossible for users on small screens to access the "Accomplishments" tab, among others.
+*   **Decision/Outcome:**
+    1.  The erroneous `)}` character was removed from `components/Header.tsx`, located immediately after the `div` containing the mobile menu toggle button.
+    2.  This correction allows the mobile navigation menu to render as intended when `isMobileMenuOpen` is true.
+*   **Rationale:** This fix addresses a fundamental rendering bug that directly impacted application usability, especially on mobile devices. By correcting the syntax error, the mobile navigation, including the "Accomplishments" tab, is now fully accessible and functional, aligning the application with the user's expectations and previous directives.
+
+### 2024-09-12: Implement Blood Orange Brand Color for Logo and Icon
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to change the color of the "gitEnglish™" logo text and its accompanying "hub" icon to a specific "blood orange" color. This change needed to be applied consistently across both light and dark themes.
+*   **Decision/Outcome:**
+    1.  A new custom color, `blood-orange: '#d83a15'`, was added to the `tailwind.config.theme.extend.colors` in `index.html`.
+    2.  The `className` for the "hub" icon `<span>` and the "gitEnglish™" text `<h1>` in both `components/Header.tsx` and `components/LoginScreen.tsx` were updated to use `text-blood-orange`. This ensures the color is applied universally, regardless of the active theme.
+*   **Rationale:** This change directly implements the user's explicit visual directive to brand the application's logo and icon with a distinct "blood orange" color. It ensures consistency in brand identity across different themes and improves the overall aesthetic as per user requirements.
+
 ### 2024-09-11: Reframe Dashboard as an 'Inbox' with Notification Badge
 
 *   **Type:** `Refactor`
@@ -7,6 +64,24 @@
     2.  Added a notification badge to the "Inbox" navigation link. This badge dynamically displays the number of classes currently in the approval queue.
     3.  Adjusted the initial mock data to ensure the notification badge displays "3" on first load, as requested by the user for testing and demonstration.
 *   **Rationale:** Renaming the main view to "Inbox" provides a more accurate and intuitive mental model for the user's primary workflow (reviewing and actioning items). The notification badge adds a critical, actionable insight directly into the main navigation, improving efficiency by showing the user their pending workload without needing to navigate to the page first.
+
+### 2024-09-11: Rename 'Class History' to 'Accomplishments' for Clarity
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to rename the "Class History" section to "Accomplishments" to better reflect its purpose as an archive of completed work. This change affects both the navigation link and the page title.
+*   **Decision/Outcome:**
+    1.  The navigation link in `components/Header.tsx` (both desktop and mobile) has been changed from "Class History" to "Accomplishments". The `viewName` prop for this link was also updated to 'Accomplishments'.
+    2.  The `activeView` state check in `index.tsx` was updated to `case 'Accomplishments':`.
+    3.  The main `<h1>` title within `components/LearningHub.tsx` has been changed from "Class History" to "Accomplishments".
+    4.  The `README.md` and `ARCHITECTURE.md` files have been updated to reflect "Accomplishments" in core features and component descriptions.
+*   **Rationale:** This change directly addresses user feedback by providing a more intuitive and meaningful name for the archive of approved classes. "Accomplishments" clearly communicates the content's purpose and enhances the overall user experience by aligning UI elements with their intended meaning.
+
+### 2024-09-11: Align "Learning Hub" Navigation Link with "Class History" Page Title
+
+*   **Type:** `Refactor`
+*   **Context:** The `DECISION_LOG.md` entry from 2024-08-10 stated that the "Learning Hub" was relabeled to "Course History" (later refined to "Class History") and "all text" was updated. However, the navigation link in the `Header.tsx` was inadvertently left as "Learning Hub," creating an inconsistency between the navigation and the actual page title that was causing user confusion.
+*   **Decision/Outcome:** The text for the navigation link (both desktop and mobile) routing to the `LearningHub` component has been changed from "Learning Hub" to "Class History". This aligns the navigation experience with the page's displayed title.
+*   **Rationale:** This correction resolves a critical UI/UX inconsistency, ensuring that the navigation text accurately reflects the content of the destination page. It directly addresses user feedback by clarifying that the "Learning Hub" functionality is indeed present and now correctly labeled as "Class History" throughout the application's interface.
 
 ### 2024-09-10: Implement 'Lava' Dark Mode with Header Toggle
 
@@ -73,7 +148,7 @@
 *   **Type:** `Refactor`
 *   **Context:** The user found the previous orange color for the "Review & Approve", "Approve Class", and "Add New Mock Class" buttons too bright and requested a more subdued color that blends with the application's aesthetic.
 *   **Decision/Outcome:** The `--brand-orange` color variable was updated to a more subdued pumpkin orange. New CSS variables, `--button-subdued-bg` and `--button-subdued-hover`, were introduced with a dark blue-grey color. The "Add New Mock Class", "Review & Approve", and "Approve Class" buttons now utilize these new subdued color variables.
-*   **Rationale:** This change directly implements the user's request for a less bright, more harmonious button color palette, improving the visual comfort and overall aesthetic of the application.
+*   **Rationale:** This change directly implements the user's explicit instructions for a less bright, more harmonious button color palette, improving the visual comfort and overall aesthetic of the application.
 
 ### 2024-09-02: Refine Mobile User Experience for Dashboard Elements
 
@@ -82,7 +157,7 @@
 *   **Decision/Outcome:** The "Add New Mock Class" button now spans full width on mobile devices. The modal footer buttons ("Cancel", "Approve Class") also become full width and stack vertically when viewed on smaller screens.
 *   **Rationale:** These changes directly address the user's request for improved mobile usability by making critical interactive elements more prominent and easier to tap on touch devices, enhancing the overall user experience.
 
-### 2024-09-01: Correct Core Application Purpose to Collaborative Tool
+### 2024-08-01: Correct Core Application Purpose to Collaborative Tool
 
 *   **Type:** `Critical Discovery`
 *   **Context:** Previous development proceeded under the incorrect assumption that the application was either an "admin-only" tool or a "student-only" tool. The user provided a critical clarification that the application is meant to be a **Collaborative Tutoring Dashboard**, a shared space for a tutor to manage and review class materials *with* their student.
@@ -186,7 +261,7 @@
 
 *   **Type:** `Refactor`
 *   **Context:** User feedback indicated that the previous card design with a full outline did not provide enough visual separation. A new, cleaner design was provided as a template, featuring a vertical color bar on the left.
-*   **Decision/Outcome:** All class cards (`DashboardContent` and `LearningHub`) have been redesigned. They now feature a thick, color-coded vertical bar on the left instead of a full border. The date format is now a numerical `MM/DD/YYYY` and is styled with the accent color. The spacing between cards has been increased for better separation.
+*   **Decision/Outcome:** All class cards (`DashboardContent` and `LearningHub`) has been redesigned. They now feature a thick, color-coded vertical bar on the left instead of a full border. The date format is now a numerical `MM/DD/YYYY` and is styled with the accent color. The spacing between cards has been increased for better separation.
 *   **Rationale:** This change aligns the UI with the user's explicit visual direction. The new design improves scannability, provides clear separation between items, and creates a more modern and organized aesthetic across the application.
 
 ### 2024-08-19: Update Information Hierarchy on All Cards
@@ -249,7 +324,7 @@
 
 *   **Type:** `Refactor`
 *   **Context:** The user requested a significant redesign of the approval cards to eliminate wasted space and improve the information hierarchy. The request specified using calendar weeks, specific dates, and moving the "Topics Covered" summary to the side.
-*   **Decision/Outcome:** The `ClassApprovalCard` has been refactored into a two-column layout. The left column now displays the class title, calendar week, and specific date. The right column displays the "Topics Covered" as a list of tags. The mock data has been updated to use calendar week numbers and specific dates instead of sequential numbers and date ranges.
+*   **Decision/Outcome:** The `ClassApprovalCard` has been refactored into a two-column layout. The left column now displays the class title, calendar week, and specific date. The right column displays the "Topics Covered" as a list of tags. The mock data has been updated to use calendar week numbers and specific dates instead of sequential numbering and date ranges.
 *   **Rationale:** This new design directly addresses the user's feedback by creating a more information-dense and scannable layout. It improves the professional appearance of the dashboard and presents the class information in a more logical, real-world format.
 
 ### 2024-08-10: Refine Learning Hub into a Course History Archive
@@ -278,7 +353,7 @@
 ### 2024-08-07: Refactor Approval Queue into Accordion
 
 *   **Type:** `Refactor`
-*   **Context:** The user requested that the class approval cards not show all item details by default. Instead, they should be collapsed, showing only a summary, and expandable to reveal the full content. The approval button must only be accessible in the expanded view.
+*   **Context:** The user expressed that the accordion-style review was clunky, could lead to a messy UI if multiple items were left open, and was not ideal for mobile. A more focused, one-at-a-time review process was requested.
 *   **Decision/Outcome:** The accordion functionality has been removed from the `DashboardContent` component. It has been replaced with a modal-based workflow. Each `ClassApprovalCard` now has a "Review & Approve" button that opens a modal window containing the full class details and the final approval button.
 *   **Rationale:** This change provides a cleaner, more focused user experience for the core approval task. It prevents UI clutter, is more robust for different screen sizes, and guides the admin through a more deliberate one-by-one review process, which aligns better with the user's desired workflow.
 

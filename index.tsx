@@ -9,6 +9,8 @@ import { DashboardContent } from './components/DashboardContent';
 import { LearningHub } from './components/LearningHub';
 import { LoginScreen } from './components/LoginScreen';
 import { SettingsPage } from './components/SettingsPage';
+import { Playground } from './components/Playground'; // New import
+import { Statistics } from './components/Statistics'; // New import
 import { initialClassesToApprove, initialApprovedClasses, newMockClass } from './mockData';
 
 // This would typically be fetched or stored more securely,
@@ -68,8 +70,12 @@ function App() {
 
   const renderContent = () => {
     switch (activeView) {
-      case 'Learning Hub':
+      case 'Accomplishments':
         return <LearningHub approvedClasses={approvedClasses} />;
+      case 'Playground': // New case for Playground
+        return <Playground />;
+      case 'Statistics': // New case for Statistics
+        return <Statistics />;
       case 'Settings':
         return <SettingsPage onLogout={handleLogout} theme={theme} setTheme={setTheme} />;
       case 'Inbox':
