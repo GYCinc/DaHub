@@ -3,14 +3,14 @@
 ## 1. Core Components
 | Component Name | Responsibility |
 |---|---|
-| `App.tsx` | The main application container. Manages global state for the shared dashboard, including authentication, view routing, `classesToApprove` and `approvedClasses`, acting as the single source of truth. |
+| `App.tsx` | The main application container. Manages global state, including authentication, theme, `activeView`, `classesToApprove`, and `approvedClasses`. Renders the `Header` and the main content area. |
 | `LoginScreen.tsx` | Renders the full-page access code entry form for the shared dashboard. |
-| `Header.tsx` | Renders the top bar. Contains the logo, primary navigation (Inbox, Accomplishments, Playground, Statistics), notification badge, and the student's user menu. |
-| `DashboardContent.tsx` | The primary workspace for the tutor, serving as the application's 'Inbox'. Displays the queue of classes to be finalized ("approved"). Calculates and displays all summary stats. Manages the review modal UI. |
-| `LearningHub.tsx` | Renders the "Accomplishments" view, which is a shared archive of all approved classes for both tutor and student. |
-| `Playground.tsx` | Renders a sandbox or interactive experimentation area for new features or student activities. |
-| `Statistics.tsx` | Renders a view dedicated to displaying various metrics, analytics, and performance data. |
-| `SettingsPage.tsx`| Renders the student's settings page. |
+| `Header.tsx` | Renders the global header, including branding, primary navigation links (Inbox, Accomplishments, etc.), theme toggle, and user menu. |
+| `DashboardContent.tsx` | Renders the "Inbox" view. Features a functional UI for reviewing and approving new lessons. |
+| `LearningHub.tsx` | Renders the "Accomplishments" view, which is the main library of all approved classes. Features a vibrant, colorful UI with indigo and amber highlights. |
+| `Playground.tsx` | Renders the "Playground" view, a sandbox for future interactive features. |
+| `Statistics.tsx` | Renders the "Statistics" view for displaying analytics and metrics. |
+| `SettingsPage.tsx` | Renders the "Settings" view, accessible from the user dropdown in the header. |
 
 ## 2. Data Models & Schemas
 ```json
@@ -32,26 +32,23 @@
 ```
 
 ## 3. Critical Logic Flows
-**Application Load:**
+**Application Load & Navigation:**
 1. `index.tsx` renders the `App` component.
-2. `App` component's `isAuthenticated` state is initialized to `true`, bypassing the `LoginScreen`. `classesToApprove` and `approvedClasses` are initialized from mock data.
-3. `App` renders the main shared layout: `Header` on top, `main` content below. `DashboardContent` (acting as the Inbox) is shown by default.
+2. `App` component's `isAuthenticated` state is initialized to `true`, bypassing the `LoginScreen`. `activeView` is initialized to 'Inbox'.
+3. `App` renders the `Header` and the main content `div`.
+4. The user clicks a navigation link in the `Header` (e.g., "Accomplishments").
+5. The `onNavigate` callback updates the `activeView` state in `App.tsx` to 'Accomplishments'.
+6. The `App` component re-renders. The `renderContent` function now returns the `LearningHub` component, which is displayed within the main content area with a smooth transition.
 
 **Finalizing ("Approving") a Class:**
-1. The tutor views the `ClassApprovalCard` in `DashboardContent` (the Inbox).
-2. The tutor clicks "Review & Approve" and then the final "Approve Class" button in the modal, often during a session with the student.
+1. The user views the `ClassApprovalCard` in `DashboardContent` ("Inbox").
+2. The user clicks "Review & Approve" and then the final "Approve Class" button in the modal.
 3. `DashboardContent` calls the `onApproveClass` function passed down from `App.tsx`.
 4. The `handleApproveClass` function in `App.tsx` updates the application's state:
-    a. The class is removed from the `classesToApprove` (inbox) array.
-    b. The class is added to the `approvedClasses` (history) array.
+    a. The class is removed from the `classesToApprove` array.
+    b. The class is added to the `approvedClasses` array.
 5. The `App` component re-renders, passing the new state down.
-6. `DashboardContent` receives the new props and recalculates all summary stats. `LearningHub` (Accomplishments) also receives the updated `approvedClasses` list for the shared history. The notification badge in the `Header` is also updated.
-
-**Logging Out:**
-1. User clicks the avatar in the `Header` to open the dropdown menu.
-2. User clicks the "Log Out" button.
-3. The `handleLogout` function in `App.tsx` sets the `isAuthenticated` state to `false`.
-4. The `LoginScreen` component is rendered.
+6. `DashboardContent` shows one fewer class, and if the user navigates to `LearningHub`, it displays the newly approved class in its library.
 
 ## 4. Prompt Engineering Library
 *No prompts have been defined at this stage.*

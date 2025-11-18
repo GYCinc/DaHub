@@ -11,13 +11,14 @@ type NavLinkProps = {
     viewName: string;
     active?: boolean;
     onNavigate: (view: string) => void;
+    theme: string; // Add theme prop
 };
 
-const NavLink: FC<NavLinkProps> = ({ children, viewName, active = false, onNavigate }) => {
+const NavLink: FC<NavLinkProps> = ({ children, viewName, active = false, onNavigate, theme }) => {
     const lightModeInactive = "text-dark-blue-text hover:bg-light-gray-bg";
     const darkModeInactive = "text-dark-text-primary hover:bg-dark-bg";
 
-    const activeClasses = "bg-bright-yellow dark:bg-dark-accent/20 dark:border dark:border-dark-accent dark:text-dark-accent text-dark-blue-text";
+    const activeClasses = "bg-bright-yellow dark:bg-dark-accent/20 dark:border dark:border-dark-accent text-dark-blue-text dark:text-dark-text-primary";
     const commonClasses = "px-4 py-2 rounded-xl text-lg font-medium transition-colors";
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -25,15 +26,19 @@ const NavLink: FC<NavLinkProps> = ({ children, viewName, active = false, onNavig
         onNavigate(viewName);
     };
 
+    let finalClasses = commonClasses;
     if (active) {
-        return (
-            <a href="#" className={`${activeClasses} ${commonClasses}`} onClick={handleClick}>
-                {children}
-            </a>
-        );
+        finalClasses += ` ${activeClasses}`;
+    } else {
+        if (theme === 'light') {
+            finalClasses += ` ${lightModeInactive}`;
+        } else {
+            finalClasses += ` ${darkModeInactive}`;
+        }
     }
+    
     return (
-        <a href="#" className={`${commonClasses} ${lightModeInactive} ${darkModeInactive}`} onClick={handleClick}>
+        <a href="#" className={finalClasses} onClick={handleClick}>
             {children}
         </a>
     );
@@ -51,7 +56,7 @@ type HeaderProps = {
 
 export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inboxCount }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true); // Changed to true for diagnostic testing
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Reverted to false
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -73,8 +78,8 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
                 gitEnglish™
             </h1>
         </div>
-        <nav className="flex items-center gap-4"> {/* Removed 'hidden sm:flex' to always show desktop nav for diagnostic */}
-          <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={onNavigate}>
+        <nav className="hidden sm:flex items-center gap-4"> {/* Re-added 'hidden sm:flex' */}
+          <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={onNavigate} theme={theme}>
             <div className="relative flex items-center gap-2">
                 Inbox
                 {inboxCount > 0 && (
@@ -84,9 +89,9 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
                 )}
             </div>
           </NavLink>
-          <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={onNavigate}>Accomplishments</NavLink>
-          <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={onNavigate}>Playground</NavLink> {/* New NavLink */}
-          <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={onNavigate}>Statistics</NavLink> {/* New NavLink */}
+          <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={onNavigate} theme={theme}>Accomplishments</NavLink>
+          <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={onNavigate} theme={theme}>Playground</NavLink> {/* New NavLink */}
+          <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={onNavigate} theme={theme}>Statistics</NavLink> {/* New NavLink */}
         </nav>
       </div>
       <div className="flex items-center gap-4">
@@ -143,10 +148,10 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
           </button>
         </div>
       </div>
-      {isMobileMenuOpen && ( // This will now open automatically for testing
+      {isMobileMenuOpen && (
         <div className="absolute top-full left-0 right-0 mx-4 bg-white/95 dark:bg-dark-card/95 backdrop-blur-md shadow-lg rounded-b-2xl sm:hidden overflow-hidden z-20">
           <nav className="flex flex-col p-4 gap-2">
-            <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={handleMobileNav}>
+            <NavLink viewName="Inbox" active={activeLink === 'Inbox'} onNavigate={handleMobileNav} theme={theme}>
               <div className="relative flex items-center gap-2">
                   Inbox
                   {inboxCount > 0 && (
@@ -156,9 +161,9 @@ export function Header({ activeLink, onNavigate, onLogout, theme, setTheme, inbo
                   )}
               </div>
             </NavLink>
-            <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={handleMobileNav}>Accomplishments</NavLink>
-            <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={handleMobileNav}>Playground</NavLink> {/* New NavLink for mobile */}
-            <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={handleMobileNav}>Statistics</NavLink> {/* New NavLink for mobile */}
+            <NavLink viewName="Accomplishments" active={activeLink === 'Accomplishments'} onNavigate={handleMobileNav} theme={theme}>Accomplishments</NavLink>
+            <NavLink viewName="Playground" active={activeLink === 'Playground'} onNavigate={handleMobileNav} theme={theme}>Playground</NavLink> {/* New NavLink for mobile */}
+            <NavLink viewName="Statistics" active={activeLink === 'Statistics'} onNavigate={handleMobileNav} theme={theme}>Statistics</NavLink> {/* New NavLink for mobile */}
             <div className="border-t border-gray-200 dark:border-dark-border my-2"></div>
             <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-light-gray-bg dark:hover:bg-dark-bg text-dark-blue-text dark:text-dark-text-primary" onClick={(e) => { e.preventDefault(); handleMobileNav('Settings'); }}>
                 <span className="material-symbols-outlined text-dark-blue-text/70 dark:text-dark-text-secondary">settings</span>

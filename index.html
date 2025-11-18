@@ -4,7 +4,8 @@
       "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
       "react": "https://esm.sh/react@^19.0.0",
       "react/": "https://esm.sh/react@^19.0.0/",
-      "react-dom/": "https://esm.sh/react-dom@^19.0.0/"
+      "react-dom/": "https://esm.sh/react-dom@^19.0.0/",
+      "framer-motion": "https://esm.sh/framer-motion@^11.0.0"
     }
   }
 </script>
@@ -18,6 +19,9 @@
         darkMode: "class",
         theme: {
           extend: {
+            backgroundImage: {
+              'dark-grid-pattern': "url(\"data:image/svg+xml,%3csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle fill='%23374151' cx='5' cy='5' r='1'/%3e%3c/svg%3e\")",
+            },
             colors: {
               // Light Theme: Vibrant and Playful
               'pastel-green': '#a7e0c4',
@@ -31,7 +35,7 @@
               'tag-text': '#5a6d8f',
               'icon-bg-green': '#10b981', // Updated for gradients
               'icon-bg-purple': '#8b5cf6', // Updated for gradients
-              'icon-bg-yellow': '#f59e0b', // Updated for gradients
+              'icon-bg-orange': '#ea580c', // New: Updated for gradients (formerly yellow)
               'notification-red': '#EF4444',
 
 
@@ -57,19 +61,21 @@
               'stat-green-light-end': '#a7f3d0',   // emerald-300
               'stat-purple-light-start': '#ede9fe', // violet-100
               'stat-purple-light-end': '#d8b4fe',   // violet-300
-              'stat-yellow-light-start': '#fef3c7', // amber-100
-              'stat-yellow-light-end': '#fcd34d',   // amber-300
+              'stat-orange-light-start': '#fdbf6b', // orange-300 (formerly yellow)
+              'stat-orange-light-end': '#f77f07',   // orange-600 (formerly yellow)
 
               // New Gradient Colors for Stat Cards (Dark Theme)
               'stat-green-dark-start': '#047857',  // emerald-700
               'stat-green-dark-end': '#064e3b',    // emerald-900
               'stat-purple-dark-start': '#6d28d9', // violet-700
               'stat-purple-dark-end': '#4c1d95',   // violet-900
-              'stat-yellow-dark-start': '#b45309', // amber-700
-              'stat-yellow-dark-end': '#78350f',   // amber-900
+              'stat-orange-dark-start': '#9a3412', // orange-800 (formerly yellow)
+              'stat-orange-dark-end': '#7c2d12',   // orange-900 (formerly yellow)
 
               // Custom Brand Color
               'blood-orange': '#d83a15',
+              'brand-indigo': '#4f46e5',
+              'brand-amber': '#fbbf24',
             },
             fontFamily: {
               heading: ["Nunito", "Quicksand", "sans-serif"],
@@ -82,8 +88,19 @@
               '2xl': '2rem',
               '3xl': '2.5rem',
             },
+            boxShadow: {
+              'glow-light-dark': '0 0px 8px rgba(255, 255, 255, 0.1), 0 0px 4px rgba(255, 255, 255, 0.05)',
+            }
           },
         },
+        safelist: [
+          'bg-pastel-green',
+          'bg-soft-purple',
+          'bg-bright-yellow',
+          'border-pastel-green',
+          'border-soft-purple',
+          'border-bright-yellow',
+        ],
       };
 </script>
 <div id="root"></div>

@@ -1,3 +1,135 @@
+### 2024-09-21: Restore Header and Encapsulated Content Layout
+
+*   **Type:** `Architectural Decision`
+*   **Context:** A previous directive to create a single, full-width page by removing the header and main content container resulted in a UI that the user found visually unappealing and lacking structure. The user stated the app "looks like shit with no header" and that the content needed to be "encapsulated to give it a home."
+*   **Decision/Outcome:**
+    1.  The application structure was reverted from a single-page scrollable layout to a multi-view layout.
+    2.  The global `Header.tsx` component was re-introduced in `App.tsx` to provide persistent branding and navigation.
+    3.  The `activeView` state and `renderContent()` switch logic were restored in `App.tsx` to manage navigation between different sections (Inbox, Accomplishments, etc.).
+    4.  All content rendered by `renderContent()` is now wrapped in a `<main>` element with distinct styling (`bg-white dark:bg-dark-card`, `rounded-3xl`, `shadow-xl`, `mx-4 mb-4`) to create a visually encapsulated "home" for the content.
+    5.  `README.md` and `ARCHITECTURE.md` were updated to reflect this restored, multi-view architecture.
+*   **Rationale:** This change directly addresses the user's explicit feedback that the application required more visual structure. By restoring the header and encapsulating the main content, the application now has a clear and professional layout, providing better separation between navigation and content, which enhances both usability and aesthetic appeal.
+
+### 2024-09-20: Implement Framer Motion for Smooth Content Transitions
+
+*   **Type:** `Architectural Decision`
+*   **Context:** The user requested "smoother menu transitions" and provided a Codepen example demonstrating a fluid exit and entry of content views. Initial attempts with simple CSS animations (`animate-fade-in`, `animate-slide-in-up`) proved insufficient, as they only handled component entry and did not provide a coordinated exit animation for previous content. This led to an abrupt visual change during navigation.
+*   **Decision/Outcome:**
+    1.  The `framer-motion` library was added to the project's import map (`index.html`).
+    2.  `index.tsx` was updated to import `AnimatePresence` and `motion`.
+    3.  The main content area (`<main>`) in `index.tsx` had its `animate-fade-in` class removed.
+    4.  The `renderContent()` output in `index.tsx` was wrapped within an `AnimatePresence mode='wait'` and a `motion.div`.
+    5.  The `motion.div` was configured with `initial={{ opacity: 0, x: 20 }}`, `animate={{ opacity: 1, x: 0 }}`, and `exit={{ opacity: 0, x: -20 }}` properties, along with a `transition={{ duration: 0.3 }}`. The `key` prop was set to `activeView` to trigger transitions correctly.
+    6.  The `animate-slide-in-up` class was removed from the root `div` of `DashboardContent.tsx`, `LearningHub.tsx`, `Playground.tsx`, `Statistics.tsx`, `SettingsPage.tsx`, and `CalendarView.tsx`, as their animations are now managed by `framer-motion`.
+*   **Rationale:** This change directly addresses the user's explicit request for truly "smoother menu transitions." By utilizing `framer-motion`, the application can now orchestrate sophisticated exit and entry animations for content components, providing a fluid, visually appealing horizontal slide and fade effect between views. This robust approach significantly enhances the user experience by eliminating abrupt content changes, aligning the application's aesthetic with modern UI expectations and the specific interaction demonstrated in the provided Codepen.
+
+### 2024-09-20: Refactor Date Prominence and Card Layout in Approval Cards
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to make the class date significantly more prominent in both the `ClassApprovalCard` (Dashboard) and `HistoryClassCard` (Accomplishments). The feedback indicated that the date is the primary way to locate a class, and it should stand out more than the existing "three-word class summary" (topic tags). Additionally, a responsive layout adjustment for `ClassApprovalCard` was incorporated for better display on small screens.
+*   **Decision/Outcome:**
+    1.  **`ClassApprovalCard` (DashboardContent.tsx):**
+        *   The `p` element displaying `formattedDate` was updated with `text-xl md:text-2xl font-heading font-extrabold mb-1` to significantly increase its size, weight, and visual impact.
+        *   The main `div` of `ClassApprovalCard` was updated with `flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-8` to ensure better responsive stacking on small screens and a more robust horizontal layout on larger screens.
+        *   The date/title container `div` was updated with `w-full sm:w-56 sm:mr-8` to control its width responsively.
+    2.  **`HistoryClassCard` (LearningHub.tsx):**
+        *   The `p` element displaying `formattedDate` was updated with `text-xl md:text-2xl font-heading font-extrabold mb-1` to ensure consistent date prominence with the approval cards.
+*   **Rationale:** This change directly addresses the user's explicit request to prioritize the class date visually, making it the most prominent piece of information for class identification. By increasing the font size and weight, the date now effectively guides the user, improving scannability and aligning the UI with the user's navigational mental model. The responsive layout improvements in `ClassApprovalCard` also enhance overall usability across different device sizes.
+
+### 2024-09-20: Remove Redundant Instructional Text from Dashboard
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested the removal of the text "Review and approve these classes to add them to the curriculum." located under the "Classes to Approve" heading, deeming it redundant and unnecessary.
+*   **Decision/Outcome:** The `<p>` element containing the text "Review and approve these classes to add them to the curriculum." was removed from the `DashboardContent.tsx` component.
+*   **Rationale:** This change directly addresses the user's request to eliminate redundant text, thereby streamlining the UI and making the "Classes to Approve" section more concise and visually cleaner.
+
+### 2024-09-19: Enhance Main Content Area Robustness
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to give the main content area (referred to as "the box") a "little bit more robust nature and its existence across the board." In dark mode, it tended to blend with the body background, and in light mode, it needed more visual definition.
+*   **Decision/Outcome:** The `<main>` element in `index.tsx` was updated with the following Tailwind CSS classes:
+    *   `bg-white` (for light mode background)
+    *   `dark:bg-dark-card` (for dark mode background, providing distinct contrast from `dark-bg`)
+    *   `rounded-3xl` (for consistent rounded corners)
+    *   `shadow-xl` (for a more pronounced elevation)
+    *   `mx-4 mb-4` (to provide consistent margins and visually separate it from the edges and header).
+*   **Rationale:** This change directly addresses the user's request for a more prominent and defined main content area. By applying a clear background, rounded corners, and a robust shadow, the "box" now has a stronger visual presence, enhancing the overall aesthetic and user experience in both light and dark themes.
+
+### 2024-09-19: Update "Avg. Items per Class" Stat Card to Orange Gradient
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested to change the "Avg. Items per Class" stat card from its current yellow/amber gradient to an orange/red gradient, matching a provided image, to enhance its visual distinctiveness on the dashboard.
+*   **Decision/Outcome:**
+    1.  **Tailwind Config Update (`index.html`):** New gradient color stops (`stat-orange-light-start/end` for light theme and `stat-orange-dark-start/end` for dark theme) were added, replacing the previous yellow variants. The `icon-bg-yellow` color definition was updated to `icon-bg-orange` (`#ea580c`).
+    2.  **`StatCard` Component Update (`components/DashboardContent.tsx`):** The `colorName` prop for the "Avg. Items per Class" stat card was changed from `'yellow'` to `'orange'`. The `lightIconBgClass` and `lightIconColorClass` logic was updated to reflect this new `colorName`, ensuring the icon background and text color are appropriate for the orange theme.
+*   **Rationale:** This change directly implements the user's explicit visual directive, providing a distinct and aesthetically pleasing orange gradient for the "Avg. Items per Class" stat card. This enhances the dashboard's visual hierarchy and aligns the UI with the desired branding, improving the overall user experience.
+
+### 2024-09-18: Fix Unreadable Active Navigation Link Text in Dark Mode
+
+*   **Type:** `Refactor`
+*   **Context:** The user reported that when a navigation link in the header was active in dark mode, its text became unreadable due to a lack of contrast. The text color (`dark:text-dark-blue-text`) was too dark against the active link's background (`dark:bg-dark-accent/20`). The user requested the text to "just stay white."
+*   **Decision/Outcome:** The `activeClasses` constant within the `NavLink` component in `components/Header.tsx` was modified. Specifically, `dark:text-dark-blue-text` was changed to `dark:text-dark-text-primary`.
+*   **Rationale:** This change directly addresses the user's feedback by improving the readability and aesthetic consistency of active navigation links in dark mode. By making the active text white, it provides sufficient contrast against the dark background, enhancing the user experience and ensuring compliance with the user's visual directive.
+
+### 2024-09-18: Enhance Glassmorphism for Dark Mode Tags with Ethereal Glow
+
+*   **Type:** `Refactor`
+*   **Context:** The user was satisfied with the glassmorphism effect in light mode for the topic tags (`ClassApprovalCard`) and item buttons (`HistoryItemButton`), but noted that in dark mode, the effect was "not even there" and requested an "ethereal white glow" behind these elements to make them pop.
+*   **Decision/Outcome:**
+    1.  **Tailwind Config Update (`index.html`):** A new custom `box-shadow` utility, `'glow-light-dark': '0 0px 8px rgba(255, 255, 255, 0.1), 0 0px 4px rgba(255, 255, 255, 0.05)'`, was added to extend the `boxShadow` property. This creates a subtle, white glowing effect.
+    2.  **`ClassApprovalCard` (Dashboard - Topic Tags):** The `span` elements were updated for dark mode:
+        *   `dark:bg-dark-card/50` was changed to `dark:bg-white/10` (lighter, more translucent background).
+        *   `dark:border-dark-border` was changed to `dark:border-white/20` (lighter, more visible border).
+        *   `dark:shadow-glow-light-dark` was added to apply the new glow.
+    3.  **`HistoryItemButton` (Accomplishments - Item Buttons):** The `button` elements were updated for dark mode:
+        *   `dark:bg-white/10` was changed to `dark:bg-white/10`.
+        *   `dark:border-dark-border` was changed to `dark:border-white/20`.
+        *   `dark:shadow-glow-light-dark` was added.
+        *   The hover effect `dark:hover:bg-dark-bg/60` was adjusted to `dark:hover:bg-white/15` to maintain the glowing aesthetic.
+*   **Rationale:** This change directly addresses the user's explicit request to improve the visual distinctiveness of the glassmorphism elements in dark mode. By introducing a lighter, more translucent background, a more visible border, and a custom white glow shadow, these elements now "pop" and achieve the desired "ethereal" appearance, significantly enhancing the dark mode aesthetic and user experience.
+
+### 2024-09-17: Fix Invisible Navigation Links in Light Mode & Restore Header Responsiveness
+
+*   **Type:** `Critical Discovery`
+*   **Context:** The user reported that the "Accomplishments", "Playground", and "Statistics" navigation links were visible in dark mode but invisible in light mode. This was due to the `NavLink` component unconditionally applying dark mode inactive text styling (`text-dark-text-primary`, a very light color) which was then rendered on a white header background (`bg-white`), making the text indistinguishable. Additionally, previous diagnostic changes to `Header.tsx` (forcing mobile menu open and desktop nav always visible) broke the intended responsive layout.
+*   **Decision/Outcome:**
+    1.  **`NavLink` Component Update:** The `theme` prop was passed to the `NavLink` component. Inside `NavLink`, the inactive styling (`lightModeInactive` or `darkModeInactive`) is now conditionally applied based on the `theme` prop, ensuring the correct text color is used for the active theme.
+    2.  **`Header` Component Revert:** The diagnostic change `const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);` was reverted to `useState(false);`.
+    3.  **`Header` Component Revert:** The `className="hidden sm:flex items-center gap-4"` was re-added to the desktop navigation `<nav>` element in `Header.tsx`, restoring its intended responsive behavior.
+*   **Rationale:** This critical fix resolves the visibility issue of navigation links in light mode by ensuring that the correct, readable text color is applied based on the active theme. Simultaneously, it restores the application's proper responsive header layout by reverting the temporary diagnostic changes, addressing both functional and aesthetic concerns raised by the user.
+
+### 2024-09-17: Implement Glassmorphism for Class Item Tags
+
+*   **Type:** `Refactor`
+*   **Context:** The user requested that the topic tags/item buttons within the `ClassApprovalCard` on the Dashboard and the `HistoryItemButton` components in the 'Accomplishments' section be given a more pronounced "glassmorphism" effect. The existing styling (`bg-tag-bg` in light mode, `dark:bg-white/5` in dark mode) was too subtle and caused the elements to blend in.
+*   **Decision/Outcome:**
+    1.  **`ClassApprovalCard` (Dashboard - Topic Tags):** The `span` elements for topic tags were updated with the following Tailwind classes:
+        *   `bg-white/80` (replacing `bg-tag-bg`)
+        *   `dark:bg-dark-card/50` (replacing `dark:bg-white/5`)
+        *   `backdrop-blur-sm` (added for both themes)
+        *   `border border-gray-200 dark:border-dark-border` (added for subtle border)
+        *   `shadow-md` (upgraded from `shadow-sm`)
+    2.  **`HistoryItemButton` (Accomplishments - Item Buttons):** The `button` element for history items was updated with:
+        *   `bg-white/80` (replacing `bg-tag-bg`)
+        *   `dark:bg-dark-card/50` (replacing `dark:bg-white/5`)
+        *   `backdrop-blur-sm` (added for both themes)
+        *   `border border-gray-200 dark:border-dark-border` (added for subtle border)
+        *   `shadow-md` (upgraded from `shadow-sm`)
+        *   Hover effects adjusted to `hover:bg-gray-100/80` (light) and `dark:hover:bg-dark-bg/60` (dark) to maintain glassmorphism on interaction.
+*   **Rationale:** This change directly addresses the user's visual directive to make the class item tags/buttons more prominent and distinct. By applying a more noticeable glassmorphism effect with increased translucency, borders, and shadows, these elements now "pop" as requested, improving the overall aesthetic and user experience in both light and dark modes.
+
+### 2024-09-16: Implement Calendar View for Accomplishments
+
+*   **Type:** `Architectural Decision`
+*   **Context:** The user requested a new way to visualize approved classes in the 'Accomplishments' section. Instead of just a list grouped by week, a calendar view was requested to display classes on their specific dates, with a toggle to switch between views.
+*   **Decision/Outcome:**
+    1.  A new `CalendarView.tsx` component was created. This component renders a monthly calendar grid and populates days with approved classes from `approvedClasses` on their respective dates. It includes navigation buttons for switching months and highlights the current day.
+    2.  `LearningHub.tsx` was updated to manage a `viewMode` state ('list' or 'calendar').
+    3.  A toggle switch (buttons) was added to `LearningHub.tsx` allowing users to switch between the existing weekly list view and the new `CalendarView`.
+    4.  The `ARCHITECTURE.md` was updated to reflect the new `CalendarView` component and the enhanced functionality of `LearningHub.tsx`.
+    5.  `index.html` was updated with a `safelist` entry in the Tailwind config to ensure that dynamically generated `bg-*` and `border-*` classes for class colors within the `CalendarView` are always included in the final CSS.
+*   **Rationale:** This change directly addresses the user's request for a more flexible and visually intuitive way to review past accomplishments. The calendar view provides a chronological perspective, while the toggle maintains the existing list view, offering users preferred modes of interaction and enhancing the overall user experience.
+
 ### 2024-09-15: Fix Critical Syntax Error in `index.tsx`
 
 *   **Type:** `Critical Discovery`
@@ -150,7 +282,7 @@
 *   **Decision/Outcome:** The `--brand-orange` color variable was updated to a more subdued pumpkin orange. New CSS variables, `--button-subdued-bg` and `--button-subdued-hover`, were introduced with a dark blue-grey color. The "Add New Mock Class", "Review & Approve", and "Approve Class" buttons now utilize these new subdued color variables.
 *   **Rationale:** This change directly implements the user's explicit instructions for a less bright, more harmonious button color palette, improving the visual comfort and overall aesthetic of the application.
 
-### 2024-09-02: Refine Mobile User Experience for Dashboard Elements
+### 2024-08-02: Refine Mobile User Experience for Dashboard Elements
 
 *   **Type:** `Refactor`
 *   **Context:** The user requested further refinement of the mobile user experience on the dashboard, specifically ensuring all interactive elements are easily tappable.
@@ -255,7 +387,7 @@
 *   **Type:** `Refactor`
 *   **Context:** User feedback indicated that the class approval card layout was horizontally inefficient, with too much empty space. A more "tightened up" layout was requested, with topic capsules centered and stacked.
 *   **Decision/Outcome:** The `ClassApprovalCard` has been refactored to use a three-column grid layout. The first column contains the date and title, the central column displays the topic tags in a compact 2-column grid, and the third column holds the "Review & Approve" button.
-*   **Rationale:** This change directly addresses user feedback to create a more compact, balanced, and information-dense layout. The new grid structure eliminates wasted horizontal space and improves the scannability of the topic capsules, resulting in a cleaner and more professional UI.
+*   **Rationale:** This change directly addresses user feedback to create a more compact, balanced, and information-dense layout. It eliminates wasted horizontal space and improves the scannability of the topic capsules, resulting in a cleaner and more professional UI.
 
 ### 2024-08-20: Redesign Cards with Left Accent Bar
 
@@ -295,7 +427,7 @@
 ### 2024-08-15: Refine Approval Card Layout and Date Format
 
 *   **Type:** `Refactor`
-*   **Context:** User feedback indicated significant dissatisfaction with the previous card design. The stylized date was unnecessary, and the layout had too much wasted space, with information stacked vertically instead of being distributed horizontally.
+*   **Context:** The user feedback indicated significant dissatisfaction with the previous card design. The stylized date was unnecessary, and the layout had too much wasted space, with information stacked vertically instead of being distributed horizontally.
 *   **Decision/Outcome:** The `ClassApprovalCard` has been redesigned to address these issues. The large, stylized date has been replaced with a simple, professional "Month Day, Year" text format. The card's internal layout now places the class title and date on the left, while the "Topics Covered" tags are on the right, making much better use of the available horizontal space and eliminating the empty gaps.
 *   **Rationale:** This change directly implements the user's explicit instructions for a cleaner, more professional, and space-efficient layout. It improves the scannability and information density of the approval queue, providing a superior user experience.
 

@@ -6,6 +6,7 @@ body {
 
 .dark body {
   background-color: #111827; /* dark-bg */
+  background-image: url("data:image/svg+xml,%3csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle fill='%23374151' cx='5' cy='5' r='1'/%3e%3c/svg%3e");
 }
 
 .primary-button {
@@ -85,6 +86,23 @@ body {
 
 .dark .class-card {
   border-radius: 1.75rem;
-  background-color: transparent;
-  box-shadow: none;
+  /* Removed: background-color: transparent; and box-shadow: none; */
+}
+
+/* Custom scrollbar for calendar day cells */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 }
